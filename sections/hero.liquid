@@ -1,0 +1,133 @@
+<section class="relative h-screen w-full overflow-hidden" id="heroSection">
+  <div 
+    id="heroImage"
+    class="absolute inset-0 bg-cover bg-center"
+    {% if section.settings.hero_image %}
+      style="background-image: url('{{ section.settings.hero_image | image_url: width: 1920 }}')"
+    {% else %}
+      style="background-image: url('https://images.unsplash.com/photo-1630173250799-2813d34ed14b?w=1920')"
+    {% endif %}
+  ></div>
+  
+  <div 
+    id="heroOverlay"
+    class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
+  ></div>
+
+  <div class="relative h-full flex items-center justify-center">
+    <div class="text-center px-6 max-w-4xl">
+      <h2 id="heroTitle" class="text-white mb-6 tracking-[0.2em] uppercase">
+        {{ section.settings.title }}
+      </h2>
+      <p id="heroSubtitle" class="text-white/90 mb-8 max-w-2xl mx-auto">
+        {{ section.settings.subtitle }}
+      </p>
+      <div id="heroButton">
+        {% if section.settings.button_link != blank %}
+          <a 
+            href="{{ section.settings.button_link }}"
+            class="inline-block bg-white text-black hover:bg-white/90 px-12 py-4 tracking-wider transition-all"
+          >
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+    <i data-lucide="chevron-down" class="text-white w-8 h-8"></i>
+  </div>
+</section>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero animations
+  const heroTitle = document.getElementById('heroTitle');
+  const heroSubtitle = document.getElementById('heroSubtitle');
+  const heroButton = document.getElementById('heroButton');
+  const heroImage = document.getElementById('heroImage');
+  const heroOverlay = document.getElementById('heroOverlay');
+  const heroSection = document.getElementById('heroSection');
+
+  // Entrance animations
+  gsap.fromTo(heroTitle,
+    { y: 100, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1.2, delay: 0.5, ease: 'power3.out' }
+  );
+
+  gsap.fromTo(heroSubtitle,
+    { y: 50, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, delay: 0.8, ease: 'power3.out' }
+  );
+
+  gsap.fromTo(heroButton,
+    { y: 30, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, delay: 1.1, ease: 'power3.out' }
+  );
+
+  // Parallax effect
+  gsap.to(heroImage, {
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1,
+    },
+    scale: 1.1,
+    ease: 'none',
+  });
+
+  gsap.to(heroOverlay, {
+    scrollTrigger: {
+      trigger: heroSection,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 1,
+    },
+    opacity: 0.9,
+    ease: 'none',
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Imagen de Fondo"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Colección Otoño/Invierno 2025"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Descubre la elegancia atemporal con nuestra nueva colección de prendas diseñadas para el hombre moderno que busca distinción y estilo."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del Botón",
+      "default": "EXPLORAR COLECCIÓN"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del Botón"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}

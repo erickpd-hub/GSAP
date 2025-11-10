@@ -1,0 +1,38 @@
+{% if section.settings.show_announcement %}
+<div class="announcement-bar bg-black text-white py-2 text-center text-sm tracking-wider overflow-hidden">
+  <div class="announcement-slide">
+    <span>{{ section.settings.announcement_text }}</span>
+  </div>
+</div>
+
+<style>
+  .announcement-slide {
+    animation: slide 15s linear infinite;
+  }
+
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Barra de Anuncios",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Mostrar barra de anuncios",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Texto del anuncio",
+      "default": "✨ ENVÍO GRATIS EN COMPRAS SUPERIORES A €200 | NUEVA COLECCIÓN DISPONIBLE ✨"
+    }
+  ]
+}
+{% endschema %}

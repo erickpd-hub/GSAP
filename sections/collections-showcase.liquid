@@ -1,0 +1,150 @@
+<section class="py-24 bg-zinc-950 text-white overflow-hidden" id="collectionsSection">
+  <div class="container mx-auto px-6">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="collection-content">
+        <h2 class="mb-6 tracking-[0.2em] uppercase">
+          {{ section.settings.title }}
+        </h2>
+        <p class="text-white/80 mb-8 leading-relaxed">
+          {{ section.settings.description_1 }}
+        </p>
+        <p class="text-white/80 mb-8 leading-relaxed">
+          {{ section.settings.description_2 }}
+        </p>
+        {% if section.settings.button_link != blank %}
+          <a 
+            href="{{ section.settings.button_link }}"
+            class="inline-block border border-white text-white hover:bg-white hover:text-black px-10 py-3 tracking-wider transition-all"
+          >
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      </div>
+
+      <div class="relative h-[600px] hidden lg:block">
+        <div 
+          id="collectionImageLeft"
+          class="absolute left-0 top-0 w-1/2 h-[500px] bg-cover bg-center"
+          {% if section.settings.image_left %}
+            style="background-image: url('{{ section.settings.image_left | image_url: width: 800 }}')"
+          {% else %}
+            style="background-image: url('https://images.unsplash.com/photo-1634511468235-b8e447102e08?w=800')"
+          {% endif %}
+        ></div>
+        <div 
+          id="collectionImageRight"
+          class="absolute right-0 bottom-0 w-1/2 h-[500px] bg-cover bg-center"
+          {% if section.settings.image_right %}
+            style="background-image: url('{{ section.settings.image_right | image_url: width: 800 }}')"
+          {% else %}
+            style="background-image: url('https://images.unsplash.com/photo-1742392133846-a8b416e81661?w=800')"
+          {% endif %}
+        ></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  const collectionsSection = document.getElementById('collectionsSection');
+  const imageLeft = document.getElementById('collectionImageLeft');
+  const imageRight = document.getElementById('collectionImageRight');
+  const content = document.querySelector('.collection-content');
+
+  // Parallax for images
+  if (imageLeft) {
+    gsap.to(imageLeft, {
+      y: -100,
+      scrollTrigger: {
+        trigger: collectionsSection,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      },
+    });
+  }
+
+  if (imageRight) {
+    gsap.to(imageRight, {
+      y: 100,
+      scrollTrigger: {
+        trigger: collectionsSection,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      },
+    });
+  }
+
+  // Content entrance animation
+  if (content) {
+    gsap.fromTo(content,
+      { x: -50, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: content,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Showcase de Colecciones",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Colección Signature"
+    },
+    {
+      "type": "textarea",
+      "id": "description_1",
+      "label": "Descripción 1",
+      "default": "Nuestra colección insignia representa la culminación de décadas de experiencia en sastrería. Cada pieza es elaborada meticulosamente con los mejores materiales del mundo, desde lanas italianas hasta sedas asiáticas de primera calidad."
+    },
+    {
+      "type": "textarea",
+      "id": "description_2",
+      "label": "Descripción 2",
+      "default": "Diseñada para el hombre que no acepta compromisos, esta colección fusiona la tradición clásica con innovaciones contemporáneas, resultando en prendas que trascienden las tendencias pasajeras."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_left",
+      "label": "Imagen Izquierda"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_right",
+      "label": "Imagen Derecha"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del Botón",
+      "default": "VER COLECCIÓN"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del Botón"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Showcase de Colecciones"
+    }
+  ]
+}
+{% endschema %}

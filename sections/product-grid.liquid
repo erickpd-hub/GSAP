@@ -1,0 +1,185 @@
+<section class="py-24 bg-white dark:bg-zinc-900 transition-colors">
+  <div class="container mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="mb-4 tracking-[0.2em] uppercase text-black dark:text-white">
+        {{ section.settings.title }}
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        {{ section.settings.subtitle }}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {% for block in section.blocks %}
+        <div class="product-card group cursor-pointer" data-product-index="{{ forloop.index0 }}">
+          <div class="relative overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 aspect-[3/4]">
+            <div class="product-image w-full h-full">
+              {% if block.settings.product != blank %}
+                {% assign product = block.settings.product %}
+                <a href="{{ product.url }}">
+                  <img 
+                    src="{{ product.featured_image | image_url: width: 600 }}" 
+                    alt="{{ product.title }}"
+                    class="w-full h-full object-cover"
+                  >
+                </a>
+              {% elsif block.settings.image %}
+                <img 
+                  src="{{ block.settings.image | image_url: width: 600 }}" 
+                  alt="{{ block.settings.title }}"
+                  class="w-full h-full object-cover"
+                >
+              {% else %}
+                <div class="w-full h-full bg-gray-200 dark:bg-gray-700"></div>
+              {% endif %}
+            </div>
+            
+            <button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <i data-lucide="heart" class="w-5 h-5 text-black"></i>
+            </button>
+            
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-gray-500 dark:text-gray-400 text-sm tracking-wider uppercase">
+              {{ block.settings.category }}
+            </p>
+            <h3 class="text-black dark:text-white">
+              {% if block.settings.product != blank %}
+                {{ product.title }}
+              {% else %}
+                {{ block.settings.title }}
+              {% endif %}
+            </h3>
+            <p class="text-black dark:text-white">
+              {% if block.settings.product != blank %}
+                {{ product.price | money }}
+              {% else %}
+                {{ block.settings.price }}
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Product card animations
+  const productCards = document.querySelectorAll('.product-card');
+  
+  productCards.forEach((card, index) => {
+    const image = card.querySelector('.product-image');
+    
+    // Entrance animation
+    gsap.fromTo(card,
+      { y: 80, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        delay: index * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+
+    // Hover effect
+    card.addEventListener('mouseenter', () => {
+      gsap.to(image, {
+        scale: 1.1,
+        duration: 0.6,
+        ease: 'power2.out',
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      gsap.to(image, {
+        scale: 1,
+        duration: 0.6,
+        ease: 'power2.out',
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Grid de Productos",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Nuevos Lanzamientos"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Explora nuestra selección curada de prendas premium diseñadas para destacar"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Producto",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Producto"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen personalizada (opcional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título personalizado (si no hay producto)",
+          "default": "Nombre del Producto"
+        },
+        {
+          "type": "text",
+          "id": "category",
+          "label": "Categoría",
+          "default": "Categoría"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Precio personalizado (si no hay producto)",
+          "default": "€999"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grid de Productos",
+      "blocks": [
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        },
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

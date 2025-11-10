@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "title": "Colección Otoño/Invierno 2025",
+        "subtitle": "Descubre la elegancia atemporal con nuestra nueva colección de prendas diseñadas para el hombre moderno que busca distinción y estilo.",
+        "button_text": "EXPLORAR COLECCIÓN",
+        "button_link": "/collections/all"
+      }
+    },
+    "product_grid": {
+      "type": "product-grid",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "title": "Traje Ejecutivo Milano",
+            "category": "Trajes",
+            "price": "€1,850"
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "title": "Abrigo de Invierno",
+            "category": "Abrigos",
+            "price": "€2,200"
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "title": "Camisa de Seda Premium",
+            "category": "Camisas",
+            "price": "€450"
+          }
+        },
+        "product_4": {
+          "type": "product",
+          "settings": {
+            "title": "Chaqueta de Cuero",
+            "category": "Chaquetas",
+            "price": "€1,650"
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4"
+      ],
+      "settings": {
+        "title": "Nuevos Lanzamientos",
+        "subtitle": "Explora nuestra selección curada de prendas premium diseñadas para destacar"
+      }
+    },
+    "collections": {
+      "type": "collections-showcase",
+      "settings": {
+        "title": "Colección Signature",
+        "description_1": "Nuestra colección insignia representa la culminación de décadas de experiencia en sastrería. Cada pieza es elaborada meticulosamente con los mejores materiales del mundo, desde lanas italianas hasta sedas asiáticas de primera calidad.",
+        "description_2": "Diseñada para el hombre que no acepta compromisos, esta colección fusiona la tradición clásica con innovaciones contemporáneas, resultando en prendas que trascienden las tendencias pasajeras.",
+        "button_text": "VER COLECCIÓN",
+        "button_link": "/collections/signature"
+      }
+    },
+    "banner": {
+      "type": "featured-banner",
+      "settings": {
+        "title": "Cuero Premium Italiano",
+        "subtitle": "Chaquetas confeccionadas con el mejor cuero de Toscana"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "product_grid",
+    "collections",
+    "banner"
+  ]
+}

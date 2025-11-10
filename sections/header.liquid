@@ -1,0 +1,173 @@
+<header 
+  id="shopHeader" 
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
+  data-header
+>
+  <div class="container mx-auto px-6">
+    <div class="flex items-center justify-between">
+      <!-- Mobile Menu Button -->
+      <button class="lg:hidden text-white" id="mobileMenuToggle">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center gap-8">
+        {% for link in section.settings.menu.links %}
+          <a href="{{ link.url }}" class="text-white/80 hover:text-white transition-colors">
+            {{ link.title }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <!-- Logo -->
+      <div class="absolute left-1/2 -translate-x-1/2">
+        <a href="/" class="text-white tracking-[0.3em] text-xl">
+          {{ section.settings.logo_text | default: 'ÉLÉGANCE' }}
+        </a>
+      </div>
+
+      <!-- Right Icons -->
+      <div class="flex items-center gap-6">
+        {% if section.settings.show_search %}
+          <button class="text-white hidden md:block" id="searchToggle">
+            <i data-lucide="search" class="w-5 h-5"></i>
+          </button>
+        {% endif %}
+
+        {% if shop.customer_accounts_enabled %}
+          <a href="{{ routes.account_url }}" class="text-white">
+            <i data-lucide="user" class="w-5 h-5"></i>
+          </a>
+        {% endif %}
+
+        <!-- Dark Mode Toggle -->
+        {% if section.settings.show_dark_mode %}
+          <button class="text-white" id="darkModeToggle">
+            <i data-lucide="moon" class="w-5 h-5 dark-icon"></i>
+            <i data-lucide="sun" class="w-5 h-5 light-icon hidden"></i>
+          </button>
+        {% endif %}
+
+        <a href="{{ routes.cart_url }}" class="text-white relative" id="cart-icon-bubble">
+          <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+          <span class="absolute -top-1 -right-1 bg-white text-black text-xs w-4 h-4 rounded-full flex items-center justify-center">
+            {{ cart.item_count }}
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="fixed inset-0 bg-black/95 z-40 hidden">
+  <div class="flex flex-col items-center justify-center h-full gap-8">
+    <button class="absolute top-6 right-6 text-white" id="mobileMenuClose">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    {% for link in section.settings.menu.links %}
+      <a href="{{ link.url }}" class="text-white text-2xl tracking-wider hover:text-white/70 transition-colors">
+        {{ link.title }}
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Header scroll effect
+  const header = document.querySelector('[data-header]');
+  let lastScroll = 0;
+
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 50) {
+      header.classList.add('bg-black/95', 'backdrop-blur-md', 'py-4');
+      header.classList.remove('bg-transparent', 'py-6');
+    } else {
+      header.classList.remove('bg-black/95', 'backdrop-blur-md', 'py-4');
+      header.classList.add('bg-transparent', 'py-6');
+    }
+  });
+
+  // GSAP Header Animation
+  gsap.fromTo(header, 
+    { y: -100, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, ease: 'power3.out' }
+  );
+
+  // Mobile Menu
+  const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+  const mobileMenuClose = document.getElementById('mobileMenuClose');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  mobileMenuToggle?.addEventListener('click', () => {
+    mobileMenu.classList.remove('hidden');
+    gsap.fromTo(mobileMenu, 
+      { opacity: 0 },
+      { opacity: 1, duration: 0.3 }
+    );
+  });
+
+  mobileMenuClose?.addEventListener('click', () => {
+    gsap.to(mobileMenu, {
+      opacity: 0,
+      duration: 0.3,
+      onComplete: () => mobileMenu.classList.add('hidden')
+    });
+  });
+
+  // Dark Mode Toggle
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const darkIcon = document.querySelector('.dark-icon');
+  const lightIcon = document.querySelector('.light-icon');
+
+  darkModeToggle?.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    darkIcon.classList.toggle('hidden');
+    lightIcon.classList.toggle('hidden');
+    
+    // Save preference
+    const isDark = document.documentElement.classList.contains('dark');
+    localStorage.setItem('darkMode', isDark);
+  });
+
+  // Load dark mode preference
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.documentElement.classList.add('dark');
+    darkIcon?.classList.add('hidden');
+    lightIcon?.classList.remove('hidden');
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Texto del Logo",
+      "default": "ÉLÉGANCE"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menú de Navegación",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Mostrar búsqueda",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dark_mode",
+      "label": "Mostrar modo oscuro",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

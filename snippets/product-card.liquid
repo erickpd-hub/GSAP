@@ -1,0 +1,106 @@
+{% comment %}
+  Product Card Snippet
+  
+  Usage:
+  {% render 'product-card', product: product, index: forloop.index0 %}
+{% endcomment %}
+
+{% assign product_index = index | default: 0 %}
+
+<div class="product-card group cursor-pointer" data-product-index="{{ product_index }}">
+  <div class="relative overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 aspect-[3/4]">
+    <div class="product-image w-full h-full">
+      <a href="{{ product.url }}">
+        {% if product.featured_image %}
+          <img 
+            src="{{ product.featured_image | image_url: width: 600 }}" 
+            alt="{{ product.title | escape }}"
+            class="w-full h-full object-cover"
+            loading="lazy"
+          >
+        {% else %}
+          <div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+            <span class="text-gray-400">No Image</span>
+          </div>
+        {% endif %}
+      </a>
+    </div>
+    
+    <!-- Wishlist Button -->
+    <button 
+      class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      data-product-id="{{ product.id }}"
+      aria-label="Add to wishlist"
+    >
+      <i data-lucide="heart" class="w-5 h-5 text-black"></i>
+    </button>
+    
+    <!-- Hover Overlay -->
+    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300"></div>
+    
+    <!-- Quick Add Button (appears on hover) -->
+    {% if product.available %}
+      <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <button 
+          class="w-full bg-white text-black py-2 px-4 hover:bg-black hover:text-white transition-colors"
+          data-product-id="{{ product.id }}"
+          data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+        >
+          Añadir al Carrito
+        </button>
+      </div>
+    {% endif %}
+  </div>
+  
+  <!-- Product Info -->
+  <div class="space-y-1">
+    {% if product.type %}
+      <p class="text-gray-500 dark:text-gray-400 text-sm tracking-wider uppercase">
+        {{ product.type }}
+      </p>
+    {% endif %}
+    
+    <h3 class="text-black dark:text-white">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h3>
+    
+    <div class="flex items-center gap-2">
+      {% if product.compare_at_price > product.price %}
+        <span class="text-gray-400 line-through">
+          {{ product.compare_at_price | money }}
+        </span>
+        <span class="text-black dark:text-white">
+          {{ product.price | money }}
+        </span>
+        <span class="bg-red-600 text-white text-xs px-2 py-1">
+          {{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}% OFF
+        </span>
+      {% else %}
+        <span class="text-black dark:text-white">
+          {{ product.price | money }}
+        </span>
+      {% endif %}
+    </div>
+    
+    {% unless product.available %}
+      <p class="text-red-600">Agotado</p>
+    {% endunless %}
+  </div>
+</div>
+
+<style>
+  .product-card {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

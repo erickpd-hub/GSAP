@@ -1,0 +1,195 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Élégance",
+    "theme_version": "1.0.0",
+    "theme_author": "Élégance Team",
+    "theme_documentation_url": "https://elegance.com/docs",
+    "theme_support_url": "https://elegance.com/support"
+  },
+  {
+    "name": "Colores",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Esquema de Colores"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Color Primario",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Color Secundario",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Color de Acento",
+        "default": "#18181b"
+      }
+    ]
+  },
+  {
+    "name": "Tipografía",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Fuentes"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Fuente de Encabezados",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Fuente del Cuerpo",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "id": "body_font_size",
+        "min": 12,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "Tamaño de Fuente Base",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Carrito",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Configuración del Carrito"
+      },
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Tipo de Carrito",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Cajón Lateral"
+          },
+          {
+            "value": "page",
+            "label": "Página Completa"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_notes_enable",
+        "label": "Habilitar Notas del Carrito",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Productos",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Vista de Productos"
+      },
+      {
+        "type": "range",
+        "id": "products_per_row_desktop",
+        "min": 2,
+        "max": 5,
+        "step": 1,
+        "label": "Productos por Fila (Desktop)",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "products_per_row_mobile",
+        "min": 1,
+        "max": 2,
+        "step": 1,
+        "label": "Productos por Fila (Móvil)",
+        "default": 1
+      },
+      {
+        "type": "checkbox",
+        "id": "product_hover_image",
+        "label": "Mostrar Segunda Imagen al Pasar el Mouse",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Redes Sociales",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cuentas de Redes Sociales"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://instagram.com/tuusuario"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "https://facebook.com/tupagina"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "https://twitter.com/tuusuario"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "https://youtube.com/tucanal"
+      }
+    ]
+  },
+  {
+    "name": "Animaciones",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Efectos y Animaciones"
+      },
+      {
+        "type": "checkbox",
+        "id": "animations_enable",
+        "label": "Habilitar Animaciones GSAP",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "parallax_enable",
+        "label": "Habilitar Efectos Parallax",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "animation_speed",
+        "min": 0.5,
+        "max": 2,
+        "step": 0.1,
+        "label": "Velocidad de Animación",
+        "default": 1
+      }
+    ]
+  }
+]

@@ -1,0 +1,95 @@
+<section class="relative h-[70vh] overflow-hidden" id="featuredBanner">
+  <div 
+    id="bannerImage"
+    class="absolute inset-0 bg-cover bg-center scale-110"
+    {% if section.settings.banner_image %}
+      style="background-image: url('{{ section.settings.banner_image | image_url: width: 1920 }}')"
+    {% else %}
+      style="background-image: url('https://images.unsplash.com/photo-1589591990984-68a20755020d?w=1920')"
+    {% endif %}
+  ></div>
+  <div class="absolute inset-0 bg-black/40"></div>
+
+  <div 
+    id="bannerText"
+    class="relative h-full flex items-center justify-center text-center px-6"
+  >
+    <div class="max-w-3xl">
+      <h2 class="text-white mb-4 tracking-[0.2em] uppercase">
+        {{ section.settings.title }}
+      </h2>
+      <p class="text-white/90 text-xl">
+        {{ section.settings.subtitle }}
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  const banner = document.getElementById('featuredBanner');
+  const bannerImage = document.getElementById('bannerImage');
+  const bannerText = document.getElementById('bannerText');
+
+  // Parallax effect
+  if (bannerImage) {
+    gsap.to(bannerImage, {
+      y: 200,
+      scrollTrigger: {
+        trigger: banner,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+      },
+    });
+  }
+
+  // Text animation
+  if (bannerText) {
+    gsap.fromTo(bannerText,
+      { scale: 0.8, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: bannerText,
+          start: 'top bottom-=100',
+          toggleActions: 'play none none none',
+        },
+      }
+    );
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Banner Destacado",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Imagen de Fondo"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Cuero Premium Italiano"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Chaquetas confeccionadas con el mejor cuero de Toscana"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Destacado"
+    }
+  ]
+}
+{% endschema %}

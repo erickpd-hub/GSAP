@@ -1,11 +1,10 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "Élégance",
+    "theme_name": "Elegance",
     "theme_version": "1.0.0",
-    "theme_author": "Élégance Team",
-    "theme_documentation_url": "https://elegance.com/docs",
-    "theme_support_url": "https://elegance.com/support"
+    "theme_author": "Erickpd",
+
   },
   {
     "name": "Colores",

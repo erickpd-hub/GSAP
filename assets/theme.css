@@ -4,6 +4,14 @@
   --color-white: #ffffff;
   --color-zinc-900: #18181b;
   --color-zinc-950: #09090b;
+  
+  /* Theme Color Variables */
+  --color-text: #000000;
+  --color-text-secondary: #6b7280;
+  --color-background: #ffffff;
+  --color-surface: #f9fafb;
+  --color-accent: #18181b;
+  --color-border: #e5e7eb;
 }
 
 * {
@@ -15,14 +23,24 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
-  color: var(--color-black);
+  color: var(--color-text);
+  background-color: var(--color-background);
   overflow-x: hidden;
 }
 
 /* Dark Mode */
+.dark {
+  --color-text: #ffffff;
+  --color-text-secondary: #9ca3af;
+  --color-background: #18181b;
+  --color-surface: #27272a;
+  --color-accent: #ffffff;
+  --color-border: #3f3f46;
+}
+
 .dark body {
-  background-color: var(--color-zinc-900);
-  color: var(--color-white);
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
 /* Typography */

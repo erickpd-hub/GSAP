@@ -236,11 +236,17 @@
       <div class="cart-items" data-cart-items>
         {% for item in cart.items %}
           <div class="cart-item" data-cart-item data-line="{{ forloop.index }}">
-            <img 
-              src="{{ item.image | img_url: '300x' }}" 
-              alt="{{ item.title }}"
-              class="cart-item-image"
-            >
+            {% if item.image %}
+              <img 
+                src="{{ item.image | img_url: '300x' }}" 
+                alt="{{ item.title | escape }}"
+                class="cart-item-image"
+              >
+            {% else %}
+              <div class="cart-item-image" style="background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+                <span style="color: #9ca3af; font-size: 0.75rem;">Sin imagen</span>
+              </div>
+            {% endif %}
 
             <div class="cart-item-details">
               <div>

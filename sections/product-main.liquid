@@ -225,12 +225,18 @@
   <div class="product-layout">
     {%- comment -%} Product Gallery {%- endcomment -%}
     <div class="product-gallery" data-product-gallery>
-      <img 
-        src="{{ product.featured_image | img_url: '1000x' }}" 
-        alt="{{ product.title }}"
-        class="product-main-image"
-        data-main-image
-      >
+      {% if product.featured_image %}
+        <img 
+          src="{{ product.featured_image | img_url: '1000x' }}" 
+          alt="{{ product.title | escape }}"
+          class="product-main-image"
+          data-main-image
+        >
+      {% else %}
+        <div class="product-main-image" style="background: #f3f4f6; display: flex; align-items: center; justify-content: center;">
+          <span style="color: #9ca3af;">Sin imagen</span>
+        </div>
+      {% endif %}
       
       {% if product.images.size > 1 %}
         <div class="product-thumbnails">
@@ -288,7 +294,7 @@
           <label class="quantity-label">Cantidad:</label>
           <div class="quantity-input">
             <button type="button" class="quantity-btn" data-quantity-decrease>−</button>
-            <input type="number" name="quantity" value="1" min="1" class="quantity-value" data-quantity readonly>
+            <input type="number" name="quantity" value="1" min="1" class="quantity-value" data-quantity>
             <button type="button" class="quantity-btn" data-quantity-increase>+</button>
           </div>
         </div>
@@ -379,36 +385,123 @@ document.addEventListener('DOMContentLoaded', function() {
     quantityInput.value = current + 1;
   });
 
-  // Option Selection
+  // Option Selection and Variant Handling
+  const productData = {{ product | json }};
+  const variantIdInput = document.querySelector('[data-variant-id]');
+  
+  if (!productData || !productData.variants) {
+    console.error('Product data not available');
+    return;
+  }
   const options = document.querySelectorAll('[data-option]');
+  
+  // Select first option values by default
+  if (options.length > 0) {
+    const firstOptions = {};
+    options.forEach(option => {
+      const optionName = option.dataset.option;
+      if (!firstOptions[optionName]) {
+        firstOptions[optionName] = option;
+        option.classList.add('selected');
+      }
+    });
+  }
+  
+  function updateVariant() {
+    const selectedOptions = {};
+    options.forEach(option => {
+      if (option.classList.contains('selected')) {
+        const optionName = option.dataset.option;
+        const optionValue = option.dataset.value;
+        selectedOptions[optionName] = optionValue;
+      }
+    });
+
+    // Find matching variant
+    const selectedValues = Object.values(selectedOptions);
+    const variant = productData.variants.find(v => {
+      return v.options.every((option, index) => {
+        return option === selectedValues[index];
+      });
+    });
+
+    if (variant) {
+      variantIdInput.value = variant.id;
+      
+      // Update price
+      const priceElement = document.querySelector('.current-price');
+      if (priceElement) {
+        priceElement.textContent = new Intl.NumberFormat('es-ES', {
+          style: 'currency',
+          currency: 'EUR'
+        }).format(variant.price / 100);
+      }
+
+      // Update availability
+      const addToCartBtn = document.querySelector('[data-add-to-cart]');
+      if (addToCartBtn) {
+        if (variant.available) {
+          addToCartBtn.disabled = false;
+          addToCartBtn.textContent = 'Agregar al Carrito';
+        } else {
+          addToCartBtn.disabled = true;
+          addToCartBtn.textContent = 'Agotado';
+        }
+      }
+    }
+  }
+
   options.forEach(option => {
     option.addEventListener('click', function() {
+      if (this.classList.contains('unavailable')) return;
+      
       const optionName = this.dataset.option;
       document.querySelectorAll(`[data-option="${optionName}"]`).forEach(opt => {
         opt.classList.remove('selected');
       });
       this.classList.add('selected');
+      updateVariant();
     });
   });
+
+  // Initialize variant on page load
+  updateVariant();
 
   // Add to Cart
   const form = document.querySelector('[data-product-form]');
   form?.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    const formData = new FormData(this);
+    const variantId = variantIdInput.value;
+    const quantity = document.querySelector('[data-quantity]').value;
     
     fetch('/cart/add.js', {
       method: 'POST',
-      body: formData
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: parseInt(quantity)
+      })
     })
     .then(response => response.json())
     .then(data => {
+      // Dispatch cart update event
+      document.dispatchEvent(new CustomEvent('cart:updated', {
+        detail: { item_count: data.item_count }
+      }));
+      
       // Show success message
-      alert('Producto agregado al carrito');
+      if (window.themeUtils && window.themeUtils.showNotification) {
+        window.themeUtils.showNotification('Producto agregado al carrito');
+      } else {
+        alert('Producto agregado al carrito');
+      }
     })
     .catch(error => {
       console.error('Error:', error);
+      alert('Error al agregar el producto al carrito');
     });
   });
 });

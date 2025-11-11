@@ -1,14 +1,14 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "promo_ticker": {
-      "type": "promo-ticker"
-    },
-    "announcement_bar": {
-      "type": "announcement-bar"
-    },
-    "header": {
-      "type": "header"
-    },
     "hero": {
       "type": "hero",
       "settings": {
@@ -24,6 +24,7 @@
         "product_1": {
           "type": "product",
           "settings": {
+            "product": "",
             "title": "Traje Ejecutivo Milano",
             "category": "Trajes",
             "price": "€1,850"
@@ -32,6 +33,7 @@
         "product_2": {
           "type": "product",
           "settings": {
+            "product": "",
             "title": "Abrigo de Invierno",
             "category": "Abrigos",
             "price": "€2,200"
@@ -40,6 +42,7 @@
         "product_3": {
           "type": "product",
           "settings": {
+            "product": "",
             "title": "Camisa de Seda Premium",
             "category": "Camisas",
             "price": "€450"
@@ -48,6 +51,7 @@
         "product_4": {
           "type": "product",
           "settings": {
+            "product": "",
             "title": "Chaqueta de Cuero",
             "category": "Chaquetas",
             "price": "€1,650"
@@ -82,18 +86,76 @@
         "subtitle": "Chaquetas confeccionadas con el mejor cuero de Toscana"
       }
     },
-    "footer": {
-      "type": "footer"
+    "gallery_cG7NHq": {
+      "type": "gallery",
+      "blocks": {
+        "image_bYeYk4": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Whisk_310fd1a84f13ed3abfc4c995b28622b6dr_1.png",
+            "caption": "",
+            "size": "normal"
+          }
+        },
+        "image_AbEeD6": {
+          "type": "image",
+          "settings": {
+            "caption": "",
+            "size": "normal"
+          }
+        },
+        "image_QcBBe3": {
+          "type": "image",
+          "settings": {
+            "caption": "",
+            "size": "normal"
+          }
+        },
+        "image_RQXyTL": {
+          "type": "image",
+          "settings": {
+            "caption": "",
+            "size": "normal"
+          }
+        },
+        "image_pfeFCX": {
+          "type": "image",
+          "settings": {
+            "caption": "",
+            "size": "normal"
+          }
+        },
+        "image_4wnLzW": {
+          "type": "image",
+          "settings": {
+            "caption": "",
+            "size": "normal"
+          }
+        }
+      },
+      "block_order": [
+        "image_bYeYk4",
+        "image_AbEeD6",
+        "image_QcBBe3",
+        "image_RQXyTL",
+        "image_pfeFCX",
+        "image_4wnLzW"
+      ],
+      "name": "Galería",
+      "settings": {
+        "title": "Nuestra Galería",
+        "subtitle": "",
+        "columns": 3,
+        "gap": 16,
+        "border_radius": 8
+      }
     }
   },
   "order": [
-    "promo_ticker",
-    "announcement_bar",
-    "header",
     "hero",
     "product_grid",
     "collections",
     "banner",
-    "footer"
+    "gallery_cG7NHq"
   ]
 }

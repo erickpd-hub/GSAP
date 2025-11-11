@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "main": {
+      "type": "article-content",
+      "settings": {
+        "show_author": true,
+        "show_date": true,
+        "show_share_buttons": true,
+        "enable_comments": true
+      }
+    },
+    "related_articles": {
+      "type": "blog-posts",
+      "settings": {
+        "title": "Artículos Relacionados",
+        "posts_per_page": 3,
+        "grid_columns": 3
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "main",
+    "related_articles",
+    "footer"
+  ]
+}

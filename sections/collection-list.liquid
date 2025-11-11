@@ -1,0 +1,316 @@
+{% comment %}
+  ÉLÉGANCE - Collection List Section
+  Lista de colecciones con animaciones
+{% endcomment %}
+
+<style>
+  .collection-list {
+    padding: 8rem 2rem;
+    background: var(--color-background);
+  }
+
+  .collection-list__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .collection-list__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+  }
+
+  .collection-list__title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .collection-list__subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .collection-list__grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.collections_per_row }}, 1fr);
+    gap: 2rem;
+  }
+
+  .collection-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    cursor: pointer;
+    opacity: 0;
+  }
+
+  .collection-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+  }
+
+  .collection-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .collection-card:hover .collection-card__image {
+    transform: scale(1.05);
+  }
+
+  .collection-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+    transition: background 0.3s ease;
+  }
+
+  .collection-card:hover .collection-card__overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  }
+
+  .collection-card__title {
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+
+  .collection-card__count {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9375rem;
+  }
+
+  .collection-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    margin-top: 1rem;
+    font-weight: 500;
+    transition: gap 0.3s ease;
+  }
+
+  .collection-card:hover .collection-card__cta {
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 968px) {
+    .collection-list {
+      padding: 4rem 1.5rem;
+    }
+
+    .collection-list__title {
+      font-size: 2.5rem;
+    }
+
+    .collection-list__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .collection-list__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<section class="collection-list">
+  <div class="collection-list__container">
+    {% if section.settings.title != blank %}
+      <div class="collection-list__header" data-fade-in>
+        <h2 class="collection-list__title">{{ section.settings.title }}</h2>
+        {% if section.settings.subtitle != blank %}
+          <p class="collection-list__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="collection-list__grid" data-collections-grid>
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% assign collection = collections[block.settings.collection] %}
+          {% if collection %}
+            <a href="{{ collection.url }}" class="collection-card" data-collection-card {{ block.shopify_attributes }}>
+              <div class="collection-card__image-wrapper">
+                {% if collection.image %}
+                  <img 
+                    src="{{ collection.image | img_url: '800x' }}" 
+                    alt="{{ collection.title }}"
+                    class="collection-card__image"
+                    loading="lazy"
+                  >
+                {% elsif collection.products.first.featured_image %}
+                  <img 
+                    src="{{ collection.products.first.featured_image | img_url: '800x' }}" 
+                    alt="{{ collection.title }}"
+                    class="collection-card__image"
+                    loading="lazy"
+                  >
+                {% endif %}
+
+                <div class="collection-card__overlay">
+                  <h3 class="collection-card__title">{{ collection.title }}</h3>
+                  <p class="collection-card__count">
+                    {{ collection.products_count }} {% if collection.products_count == 1 %}Producto{% else %}Productos{% endif %}
+                  </p>
+                  <span class="collection-card__cta">
+                    Explorar
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </a>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {%- comment -%} Default collections if no blocks {%- endcomment -%}
+        {% for collection in collections limit: section.settings.collections_to_show %}
+          <a href="{{ collection.url }}" class="collection-card" data-collection-card>
+            <div class="collection-card__image-wrapper">
+              {% if collection.image %}
+                <img 
+                  src="{{ collection.image | img_url: '800x' }}" 
+                  alt="{{ collection.title }}"
+                  class="collection-card__image"
+                  loading="lazy"
+                >
+              {% elsif collection.products.first.featured_image %}
+                <img 
+                  src="{{ collection.products.first.featured_image | img_url: '800x' }}" 
+                  alt="{{ collection.title }}"
+                  class="collection-card__image"
+                  loading="lazy"
+                >
+              {% endif %}
+
+              <div class="collection-card__overlay">
+                <h3 class="collection-card__title">{{ collection.title }}</h3>
+                <p class="collection-card__count">
+                  {{ collection.products_count }} {% if collection.products_count == 1 %}Producto{% else %}Productos{% endif %}
+                </p>
+                <span class="collection-card__cta">
+                  Explorar
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof gsap === 'undefined') return;
+
+  const header = document.querySelector('[data-fade-in]');
+  const cards = document.querySelectorAll('[data-collection-card]');
+
+  if (header) {
+    gsap.from(header, {
+      opacity: 0,
+      y: 30,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
+  }
+
+  if (cards.length) {
+    gsap.from(cards, {
+      opacity: 0,
+      y: 40,
+      duration: 0.8,
+      stagger: 0.15,
+      delay: 0.3,
+      ease: 'power3.out',
+      clearProps: 'all'
+    });
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Lista de Colecciones",
+  "class": "collection-list-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Nuestras Colecciones"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Descubre nuestras exclusivas colecciones de moda masculina"
+    },
+    {
+      "type": "range",
+      "id": "collections_per_row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Colecciones por Fila",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "collections_to_show",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "label": "Colecciones a Mostrar (cuando no hay bloques)",
+      "default": 6
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Colección",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Colección"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lista de Colecciones",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

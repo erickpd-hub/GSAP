@@ -1,0 +1,291 @@
+{% comment %}
+  ÉLÉGANCE - Countdown Timer Section
+  Temporizador de cuenta regresiva para promociones
+{% endcomment %}
+
+<style>
+  .countdown-timer {
+    padding: 6rem 2rem;
+    background: var(--color-surface);
+    text-align: center;
+  }
+
+  .countdown-timer__container {
+    max-width: 1000px;
+    margin: 0 auto;
+    opacity: 0;
+  }
+
+  .countdown-timer__badge {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    background: var(--color-accent);
+    color: var(--color-background);
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+  }
+
+  .countdown-timer__title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .countdown-timer__subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 3rem;
+  }
+
+  .countdown-timer__display {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .countdown-timer__block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+  }
+
+  .countdown-timer__number {
+    font-size: 4rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .countdown-timer__label {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .countdown-timer__separator {
+    font-size: 4rem;
+    font-weight: 600;
+    opacity: 0.3;
+    align-self: center;
+  }
+
+  .countdown-timer__cta {
+    display: inline-flex;
+    padding: 1.25rem 2.5rem;
+    background: var(--color-accent);
+    color: var(--color-background);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .countdown-timer__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .countdown-timer--expired {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .countdown-timer {
+      padding: 4rem 1.5rem;
+    }
+
+    .countdown-timer__title {
+      font-size: 2rem;
+    }
+
+    .countdown-timer__display {
+      gap: 1rem;
+    }
+
+    .countdown-timer__number {
+      font-size: 2.5rem;
+    }
+
+    .countdown-timer__block {
+      min-width: 70px;
+    }
+
+    .countdown-timer__separator {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+<section class="countdown-timer" style="{% if section.settings.background_color %}background-color: {{ section.settings.background_color }};{% endif %}" data-countdown-section>
+  <div class="countdown-timer__container" data-fade-in>
+    {% if section.settings.badge_text != blank %}
+      <div class="countdown-timer__badge">{{ section.settings.badge_text }}</div>
+    {% endif %}
+
+    <h2 class="countdown-timer__title">{{ section.settings.title }}</h2>
+
+    {% if section.settings.subtitle != blank %}
+      <p class="countdown-timer__subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+
+    <div class="countdown-timer__display" data-countdown data-end-date="{{ section.settings.end_date }}">
+      <div class="countdown-timer__block">
+        <div class="countdown-timer__number" data-days>00</div>
+        <div class="countdown-timer__label">Días</div>
+      </div>
+
+      <div class="countdown-timer__separator">:</div>
+
+      <div class="countdown-timer__block">
+        <div class="countdown-timer__number" data-hours>00</div>
+        <div class="countdown-timer__label">Horas</div>
+      </div>
+
+      <div class="countdown-timer__separator">:</div>
+
+      <div class="countdown-timer__block">
+        <div class="countdown-timer__number" data-minutes>00</div>
+        <div class="countdown-timer__label">Minutos</div>
+      </div>
+
+      <div class="countdown-timer__separator">:</div>
+
+      <div class="countdown-timer__block">
+        <div class="countdown-timer__number" data-seconds>00</div>
+        <div class="countdown-timer__label">Segundos</div>
+      </div>
+    </div>
+
+    {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+      <a href="{{ section.settings.button_link }}" class="countdown-timer__cta">
+        {{ section.settings.button_text }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP Animation
+  if (typeof gsap !== 'undefined') {
+    const container = document.querySelector('[data-fade-in]');
+    if (container) {
+      gsap.from(container, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    }
+  }
+
+  // Countdown Timer
+  const countdown = document.querySelector('[data-countdown]');
+  if (!countdown) return;
+
+  const endDate = countdown.dataset.endDate;
+  if (!endDate) return;
+
+  const targetDate = new Date(endDate).getTime();
+  
+  const daysEl = countdown.querySelector('[data-days]');
+  const hoursEl = countdown.querySelector('[data-hours]');
+  const minutesEl = countdown.querySelector('[data-minutes]');
+  const secondsEl = countdown.querySelector('[data-seconds]');
+  const section = document.querySelector('[data-countdown-section]');
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const distance = targetDate - now;
+
+    if (distance < 0) {
+      // Timer expired
+      section.classList.add('countdown-timer--expired');
+      clearInterval(interval);
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    daysEl.textContent = String(days).padStart(2, '0');
+    hoursEl.textContent = String(hours).padStart(2, '0');
+    minutesEl.textContent = String(minutes).padStart(2, '0');
+    secondsEl.textContent = String(seconds).padStart(2, '0');
+  }
+
+  updateCountdown();
+  const interval = setInterval(updateCountdown, 1000);
+});
+</script>
+
+{% schema %}
+{
+  "name": "Temporizador de Cuenta Regresiva",
+  "class": "countdown-timer-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Texto del Badge",
+      "default": "OFERTA LIMITADA"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "La Oferta Termina Pronto"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "No te pierdas nuestras ofertas exclusivas"
+    },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Fecha de Finalización",
+      "info": "Formato: YYYY-MM-DD HH:MM:SS (ej: 2025-12-31 23:59:59)",
+      "default": "2025-12-31 23:59:59"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del Botón",
+      "default": "Comprar Ahora"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del Botón"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Color de Fondo"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Temporizador de Cuenta Regresiva",
+      "settings": {
+        "badge_text": "OFERTA LIMITADA",
+        "title": "La Oferta Termina Pronto",
+        "subtitle": "No te pierdas nuestras ofertas exclusivas",
+        "button_text": "Comprar Ahora"
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "page_hero": {
+      "type": "image-text-banner",
+      "settings": {
+        "layout": "centered",
+        "height": "small"
+      }
+    },
+    "main": {
+      "type": "rich-text",
+      "settings": {
+        "enable_animations": true
+      }
+    },
+    "page_gallery": {
+      "type": "gallery",
+      "disabled": true
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "page_hero",
+    "main",
+    "page_gallery",
+    "footer"
+  ]
+}

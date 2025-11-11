@@ -1,5 +1,14 @@
 {
   "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "announcement_bar": {
+      "type": "announcement-bar"
+    },
+    "header": {
+      "type": "header"
+    },
     "hero": {
       "type": "hero",
       "settings": {
@@ -72,12 +81,19 @@
         "title": "Cuero Premium Italiano",
         "subtitle": "Chaquetas confeccionadas con el mejor cuero de Toscana"
       }
+    },
+    "footer": {
+      "type": "footer"
     }
   },
   "order": [
+    "promo_ticker",
+    "announcement_bar",
+    "header",
     "hero",
     "product_grid",
     "collections",
-    "banner"
+    "banner",
+    "footer"
   ]
 }

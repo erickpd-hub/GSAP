@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "main": {
+      "type": "cart-main",
+      "settings": {
+        "show_vendor": true,
+        "enable_cart_notes": true,
+        "show_shipping_estimator": true
+      }
+    },
+    "cart_recommendations": {
+      "type": "product-grid",
+      "settings": {
+        "title": "También Te Puede Gustar",
+        "products_to_show": 4
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "main",
+    "cart_recommendations",
+    "footer"
+  ]
+}

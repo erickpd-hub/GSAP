@@ -1,7 +1,3 @@
-/**
- * Shopify Theme JavaScript - Élégance
- * Main theme functionality and interactions
- */
 
 (function() {
   'use strict';

@@ -1,0 +1,264 @@
+{% comment %}
+  ÉLÉGANCE - FAQ Section
+  Sección de preguntas frecuentes con acordeón animado
+{% endcomment %}
+
+<style>
+  .faq {
+    padding: 8rem 2rem;
+    background: var(--color-surface);
+  }
+
+  .faq__container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .faq__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+  }
+
+  .faq__title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .faq__subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq__item {
+    background: var(--color-background);
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    opacity: 0;
+  }
+
+  .faq__question {
+    width: 100%;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-align: left;
+    color: var(--color-text);
+    font-size: 1.125rem;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .faq__question:hover {
+    color: var(--color-accent);
+  }
+
+  .faq__icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .faq__item.active .faq__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .faq__answer-content {
+    padding: 0 2rem 1.5rem;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .faq__item.active .faq__answer {
+    max-height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    .faq {
+      padding: 4rem 1.5rem;
+    }
+
+    .faq__title {
+      font-size: 2.5rem;
+    }
+
+    .faq__question {
+      padding: 1.25rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .faq__answer-content {
+      padding: 0 1.5rem 1.25rem;
+    }
+  }
+</style>
+
+<section class="faq">
+  <div class="faq__container">
+    {% if section.settings.title != blank %}
+      <div class="faq__header" data-fade-in>
+        <h2 class="faq__title">{{ section.settings.title }}</h2>
+        {% if section.settings.subtitle != blank %}
+          <p class="faq__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="faq__list" data-faq-list>
+      {% for block in section.blocks %}
+        <div class="faq__item" data-faq-item {{ block.shopify_attributes }}>
+          <button class="faq__question" data-faq-question>
+            <span>{{ block.settings.question }}</span>
+            <svg class="faq__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq__answer">
+            <div class="faq__answer-content">
+              {{ block.settings.answer }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP Animations
+  if (typeof gsap !== 'undefined') {
+    const header = document.querySelector('[data-fade-in]');
+    const items = document.querySelectorAll('[data-faq-item]');
+
+    if (header) {
+      gsap.from(header, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    }
+
+    if (items.length) {
+      gsap.from(items, {
+        opacity: 0,
+        y: 20,
+        duration: 0.6,
+        stagger: 0.1,
+        delay: 0.3,
+        ease: 'power3.out',
+        clearProps: 'all'
+      });
+    }
+  }
+
+  // Accordion functionality
+  const questions = document.querySelectorAll('[data-faq-question]');
+  
+  questions.forEach(question => {
+    question.addEventListener('click', function() {
+      const item = this.closest('[data-faq-item]');
+      const isActive = item.classList.contains('active');
+      
+      // Close all items
+      document.querySelectorAll('[data-faq-item]').forEach(el => {
+        el.classList.remove('active');
+      });
+
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    });
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Preguntas Frecuentes",
+  "class": "faq-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Preguntas Frecuentes"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Encuentra respuestas a las preguntas más comunes"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "Pregunta",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Pregunta",
+          "default": "¿Cuál es su política de devoluciones?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Respuesta",
+          "default": "<p>Aceptamos devoluciones dentro de los 30 días posteriores a la compra. Los artículos deben estar sin usar y en su embalaje original.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Preguntas Frecuentes",
+      "blocks": [
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cuál es su política de devoluciones?",
+            "answer": "<p>Aceptamos devoluciones dentro de los 30 días posteriores a la compra.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Envían internacionalmente?",
+            "answer": "<p>Sí, enviamos a todo el mundo con envío express disponible.</p>"
+          }
+        },
+        {
+          "type": "faq_item",
+          "settings": {
+            "question": "¿Cómo puedo rastrear mi pedido?",
+            "answer": "<p>Recibirás un número de seguimiento por email una vez que tu pedido sea enviado.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

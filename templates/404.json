@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "main": {
+      "type": "image-text-banner",
+      "settings": {
+        "title": "404 - Página No Encontrada",
+        "subtitle": "Lo sentimos, la página que buscas no existe",
+        "button_text": "Volver al Inicio",
+        "button_link": "/",
+        "layout": "centered",
+        "height": "large"
+      }
+    },
+    "collection_list": {
+      "type": "collection-list",
+      "settings": {
+        "title": "Explorar Nuestras Colecciones"
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "main",
+    "collection_list",
+    "footer"
+  ]
+}

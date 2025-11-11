@@ -1,0 +1,434 @@
+{% comment %}
+  ÉLÉGANCE - Cart Main Section
+  Sección principal para el carrito de compras
+{% endcomment %}
+
+<style>
+  .cart-main {
+    padding: 6rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .cart-title {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .cart-empty {
+    text-align: center;
+    padding: 4rem 0;
+  }
+
+  .cart-empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    opacity: 0.3;
+  }
+
+  .cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+  }
+
+  .cart-items {
+    opacity: 0;
+  }
+
+  .cart-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cart-item-image {
+    width: 120px;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+
+  .cart-item-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .cart-item-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cart-item-title a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .cart-item-title a:hover {
+    color: var(--color-accent);
+  }
+
+  .cart-item-meta {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  .cart-item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .quantity-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .quantity-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-background);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .quantity-btn:hover {
+    background: var(--color-surface);
+  }
+
+  .quantity-value {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: transparent;
+  }
+
+  .cart-item-remove {
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .cart-item-remove:hover {
+    color: #ef4444;
+  }
+
+  .cart-item-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .cart-item-total {
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .cart-summary {
+    background: var(--color-surface);
+    padding: 2rem;
+    border-radius: 1rem;
+    height: fit-content;
+    position: sticky;
+    top: 6rem;
+    opacity: 0;
+  }
+
+  .summary-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+  }
+
+  .summary-row.total {
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    border-top: 2px solid var(--color-border);
+  }
+
+  .checkout-btn {
+    width: 100%;
+    padding: 1.25rem;
+    background: var(--color-accent);
+    color: var(--color-background);
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .checkout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .continue-shopping {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+  }
+
+  @media (max-width: 968px) {
+    .cart-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .cart-item {
+      grid-template-columns: 100px 1fr;
+      gap: 1rem;
+    }
+
+    .cart-item-price {
+      grid-column: 2;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .cart-summary {
+      position: relative;
+      top: 0;
+    }
+  }
+</style>
+
+<div class="cart-main" data-cart-main>
+  <h1 class="cart-title">Carrito de Compras</h1>
+
+  {% if cart.item_count == 0 %}
+    <div class="cart-empty">
+      <svg class="cart-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <p>Tu carrito está vacío</p>
+      <a href="/collections/all" class="checkout-btn" style="max-width: 300px; margin: 2rem auto 0;">
+        Continuar Comprando
+      </a>
+    </div>
+  {% else %}
+    <div class="cart-layout">
+      <div class="cart-items" data-cart-items>
+        {% for item in cart.items %}
+          <div class="cart-item" data-cart-item data-line="{{ forloop.index }}">
+            <img 
+              src="{{ item.image | img_url: '300x' }}" 
+              alt="{{ item.title }}"
+              class="cart-item-image"
+            >
+
+            <div class="cart-item-details">
+              <div>
+                <div class="cart-item-title">
+                  <a href="{{ item.url }}">{{ item.product.title }}</a>
+                </div>
+                
+                <div class="cart-item-meta">
+                  {% unless item.variant.title contains 'Default' %}
+                    {{ item.variant.title }}
+                  {% endunless %}
+                  
+                  {% if section.settings.show_vendor %}
+                    <div>{{ item.vendor }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="cart-item-quantity">
+                <div class="quantity-input">
+                  <button type="button" class="quantity-btn" data-quantity-decrease>−</button>
+                  <input 
+                    type="number" 
+                    class="quantity-value" 
+                    value="{{ item.quantity }}" 
+                    min="1"
+                    data-quantity-input
+                  >
+                  <button type="button" class="quantity-btn" data-quantity-increase>+</button>
+                </div>
+
+                <button type="button" class="cart-item-remove" data-remove-item>
+                  Eliminar
+                </button>
+              </div>
+            </div>
+
+            <div class="cart-item-price">
+              <div class="cart-item-unit-price">
+                {{ item.price | money }}
+              </div>
+              <div class="cart-item-total">
+                {{ item.line_price | money }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="cart-summary" data-cart-summary>
+        <h3 class="summary-title">Resumen del Pedido</h3>
+
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span data-cart-subtotal>{{ cart.total_price | money }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Envío</span>
+          <span>Calculado en checkout</span>
+        </div>
+
+        {% if cart.total_discount > 0 %}
+          <div class="summary-row">
+            <span>Descuento</span>
+            <span>-{{ cart.total_discount | money }}</span>
+          </div>
+        {% endif %}
+
+        <div class="summary-row total">
+          <span>Total</span>
+          <span data-cart-total>{{ cart.total_price | money }}</span>
+        </div>
+
+        <button type="button" class="checkout-btn" onclick="window.location.href='/checkout'">
+          Proceder al Pago
+        </button>
+
+        <a href="/collections/all" class="continue-shopping">
+          ← Continuar Comprando
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP Animations
+  if (typeof gsap !== 'undefined') {
+    const items = document.querySelector('[data-cart-items]');
+    const summary = document.querySelector('[data-cart-summary]');
+
+    if (items) {
+      gsap.from(items, {
+        opacity: 0,
+        x: -30,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    }
+
+    if (summary) {
+      gsap.from(summary, {
+        opacity: 0,
+        x: 30,
+        duration: 0.8,
+        delay: 0.2,
+        ease: 'power3.out'
+      });
+    }
+  }
+
+  // Cart functionality
+  const cartItems = document.querySelectorAll('[data-cart-item]');
+
+  cartItems.forEach(item => {
+    const line = item.dataset.line;
+    const decreaseBtn = item.querySelector('[data-quantity-decrease]');
+    const increaseBtn = item.querySelector('[data-quantity-increase]');
+    const quantityInput = item.querySelector('[data-quantity-input]');
+    const removeBtn = item.querySelector('[data-remove-item]');
+
+    // Decrease quantity
+    decreaseBtn?.addEventListener('click', () => {
+      const currentQty = parseInt(quantityInput.value);
+      if (currentQty > 1) {
+        updateCartItem(line, currentQty - 1);
+      }
+    });
+
+    // Increase quantity
+    increaseBtn?.addEventListener('click', () => {
+      const currentQty = parseInt(quantityInput.value);
+      updateCartItem(line, currentQty + 1);
+    });
+
+    // Remove item
+    removeBtn?.addEventListener('click', () => {
+      updateCartItem(line, 0);
+    });
+  });
+
+  function updateCartItem(line, quantity) {
+    fetch('/cart/change.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line: line,
+        quantity: quantity
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Carrito Principal",
+  "class": "cart-main-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Mostrar Marca",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_cart_notes",
+      "label": "Habilitar Notas del Carrito",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_estimator",
+      "label": "Mostrar Estimador de Envío",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

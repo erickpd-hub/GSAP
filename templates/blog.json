@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "blog_hero": {
+      "type": "image-text-banner",
+      "settings": {
+        "title": "Nuestro Blog",
+        "subtitle": "Tendencias, estilos y consejos de moda masculina",
+        "layout": "centered",
+        "height": "medium"
+      }
+    },
+    "main": {
+      "type": "blog-posts",
+      "settings": {
+        "posts_per_page": 12,
+        "show_author": true,
+        "show_date": true,
+        "grid_columns": 3
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "blog_hero",
+    "main",
+    "footer"
+  ]
+}

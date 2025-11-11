@@ -1,0 +1,424 @@
+{% comment %}
+  ÉLÉGANCE - Video Gallery Section
+  Galería de videos con reproductor integrado
+{% endcomment %}
+
+<style>
+  .video-gallery {
+    padding: 8rem 2rem;
+    background: var(--color-background);
+  }
+
+  .video-gallery__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .video-gallery__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+  }
+
+  .video-gallery__title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .video-gallery__subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .video-gallery__grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    gap: 2rem;
+  }
+
+  .video-gallery__item {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .video-gallery__thumbnail-wrapper {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .video-gallery__thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .video-gallery__item:hover .video-gallery__thumbnail {
+    transform: scale(1.05);
+  }
+
+  .video-gallery__play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .video-gallery__item:hover .video-gallery__play-button {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: white;
+  }
+
+  .video-gallery__play-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--color-text);
+    margin-left: 4px;
+  }
+
+  .video-gallery__video-info {
+    padding: 1.5rem;
+    background: var(--color-surface);
+  }
+
+  .video-gallery__video-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .video-gallery__video-description {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  .video-gallery__modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .video-gallery__modal.active {
+    display: flex;
+  }
+
+  .video-gallery__modal-content {
+    max-width: 1200px;
+    width: 100%;
+    position: relative;
+  }
+
+  .video-gallery__modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+  }
+
+  .video-gallery__video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  .video-gallery__video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 968px) {
+    .video-gallery {
+      padding: 4rem 1.5rem;
+    }
+
+    .video-gallery__title {
+      font-size: 2.5rem;
+    }
+
+    .video-gallery__grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .video-gallery__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<section class="video-gallery">
+  <div class="video-gallery__container">
+    {% if section.settings.title != blank %}
+      <div class="video-gallery__header" data-fade-in>
+        <h2 class="video-gallery__title">{{ section.settings.title }}</h2>
+        {% if section.settings.subtitle != blank %}
+          <p class="video-gallery__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="video-gallery__grid" data-video-grid>
+      {% for block in section.blocks %}
+        <div class="video-gallery__item" data-video-item data-video-url="{{ block.settings.video_url }}" {{ block.shopify_attributes }}>
+          <div class="video-gallery__thumbnail-wrapper">
+            {% if block.settings.thumbnail %}
+              <img 
+                src="{{ block.settings.thumbnail | img_url: '800x' }}" 
+                alt="{{ block.settings.title }}"
+                class="video-gallery__thumbnail"
+                loading="lazy"
+              >
+            {% else %}
+              {%- comment -%} Generate thumbnail from YouTube/Vimeo {%- endcomment -%}
+              {% assign video_id = block.settings.video_url | split: 'v=' | last | split: '&' | first %}
+              {% if block.settings.video_url contains 'youtube' or block.settings.video_url contains 'youtu.be' %}
+                <img 
+                  src="https://img.youtube.com/vi/{{ video_id }}/maxresdefault.jpg" 
+                  alt="{{ block.settings.title }}"
+                  class="video-gallery__thumbnail"
+                  loading="lazy"
+                >
+              {% endif %}
+            {% endif %}
+
+            <div class="video-gallery__play-button">
+              <svg class="video-gallery__play-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+          </div>
+
+          {% if block.settings.title != blank or block.settings.description != blank %}
+            <div class="video-gallery__video-info">
+              {% if block.settings.title != blank %}
+                <h3 class="video-gallery__video-title">{{ block.settings.title }}</h3>
+              {% endif %}
+              {% if block.settings.description != blank %}
+                <p class="video-gallery__video-description">{{ block.settings.description }}</p>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {%- comment -%} Video Modal {%- endcomment -%}
+  <div class="video-gallery__modal" data-video-modal>
+    <div class="video-gallery__modal-content">
+      <button class="video-gallery__modal-close" data-modal-close>&times;</button>
+      <div class="video-gallery__video-wrapper" data-video-container></div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP Animations
+  if (typeof gsap !== 'undefined') {
+    const header = document.querySelector('[data-fade-in]');
+    const items = document.querySelectorAll('[data-video-item]');
+
+    if (header) {
+      gsap.from(header, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    }
+
+    if (items.length) {
+      gsap.from(items, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        stagger: 0.1,
+        delay: 0.3,
+        ease: 'power3.out',
+        clearProps: 'all'
+      });
+    }
+  }
+
+  // Video Modal
+  const videoItems = document.querySelectorAll('[data-video-item]');
+  const modal = document.querySelector('[data-video-modal]');
+  const modalClose = document.querySelector('[data-modal-close]');
+  const videoContainer = document.querySelector('[data-video-container]');
+
+  function getVideoEmbedUrl(url) {
+    // YouTube
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      let videoId;
+      if (url.includes('youtu.be')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0];
+      } else {
+        videoId = url.split('v=')[1].split('&')[0];
+      }
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    }
+    
+    // Vimeo
+    if (url.includes('vimeo.com')) {
+      const videoId = url.split('vimeo.com/')[1].split('?')[0];
+      return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    }
+
+    return url;
+  }
+
+  videoItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const videoUrl = this.dataset.videoUrl;
+      if (!videoUrl) return;
+
+      const embedUrl = getVideoEmbedUrl(videoUrl);
+      const iframe = document.createElement('iframe');
+      iframe.src = embedUrl;
+      iframe.frameBorder = '0';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+
+      videoContainer.innerHTML = '';
+      videoContainer.appendChild(iframe);
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  function closeModal() {
+    modal.classList.remove('active');
+    videoContainer.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+
+  modalClose?.addEventListener('click', closeModal);
+  modal?.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+});
+</script>
+
+{% schema %}
+{
+  "name": "Galería de Videos",
+  "class": "video-gallery-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Galería de Videos"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Descubre nuestra colección en video"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Columnas",
+      "default": 2
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "text",
+          "id": "video_url",
+          "label": "URL del Video",
+          "info": "URL de YouTube o Vimeo",
+          "default": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+        },
+        {
+          "type": "image_picker",
+          "id": "thumbnail",
+          "label": "Miniatura Personalizada",
+          "info": "Opcional - Si no se proporciona, se usará la miniatura del video"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título del Video",
+          "default": "Título del Video"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Descripción",
+          "default": "Descripción breve del video"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Galería de Videos",
+      "blocks": [
+        {
+          "type": "video",
+          "settings": {
+            "title": "Video 1"
+          }
+        },
+        {
+          "type": "video",
+          "settings": {
+            "title": "Video 2"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "collection_banner": {
+      "type": "image-text-banner",
+      "settings": {
+        "layout": "full-width",
+        "height": "medium",
+        "enable_parallax": true
+      }
+    },
+    "main": {
+      "type": "collection-main",
+      "settings": {
+        "products_per_page": 16,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "grid_columns_desktop": 4,
+        "grid_columns_mobile": 2
+      }
+    },
+    "related_collections": {
+      "type": "collection-list",
+      "settings": {
+        "title": "Explorar Más Colecciones",
+        "collections_to_show": 3
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "collection_banner",
+    "main",
+    "related_collections",
+    "footer"
+  ]
+}

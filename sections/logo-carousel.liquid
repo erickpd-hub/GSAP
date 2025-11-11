@@ -1,0 +1,277 @@
+{% comment %}
+  ÉLÉGANCE - Logo Carousel Section
+  Carrusel de logos animado (right to left)
+{% endcomment %}
+
+<style>
+  .logo-carousel {
+    padding: 6rem 2rem;
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+
+  .logo-carousel__container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .logo-carousel__header {
+    text-align: center;
+    margin-bottom: 4rem;
+    opacity: 0;
+  }
+
+  .logo-carousel__title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-carousel__subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+  }
+
+  .logo-carousel__track-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logo-carousel__track {
+    display: flex;
+    gap: 4rem;
+    will-change: transform;
+  }
+
+  .logo-carousel__item {
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+  }
+
+  .logo-carousel__item:hover {
+    opacity: 1;
+  }
+
+  .logo-carousel__logo {
+    max-width: 150px;
+    max-height: 80px;
+    object-fit: contain;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+
+  .logo-carousel__item:hover .logo-carousel__logo {
+    filter: grayscale(0%);
+  }
+
+  @media (max-width: 768px) {
+    .logo-carousel {
+      padding: 4rem 1.5rem;
+    }
+
+    .logo-carousel__title {
+      font-size: 2rem;
+    }
+
+    .logo-carousel__track {
+      gap: 3rem;
+    }
+
+    .logo-carousel__item {
+      min-width: 120px;
+    }
+
+    .logo-carousel__logo {
+      max-width: 120px;
+      max-height: 60px;
+    }
+  }
+</style>
+
+<section class="logo-carousel">
+  <div class="logo-carousel__container">
+    {% if section.settings.title != blank %}
+      <div class="logo-carousel__header" data-fade-in>
+        <h2 class="logo-carousel__title">{{ section.settings.title }}</h2>
+        {% if section.settings.subtitle != blank %}
+          <p class="logo-carousel__subtitle">{{ section.settings.subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="logo-carousel__track-wrapper">
+      <div class="logo-carousel__track" data-logo-track>
+        {% for block in section.blocks %}
+          <div class="logo-carousel__item" {{ block.shopify_attributes }}>
+            {% if block.settings.logo %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" target="_blank" rel="noopener">
+                  <img 
+                    src="{{ block.settings.logo | img_url: '300x' }}" 
+                    alt="{{ block.settings.alt_text | default: 'Logo' }}"
+                    class="logo-carousel__logo"
+                    loading="lazy"
+                  >
+                </a>
+              {% else %}
+                <img 
+                  src="{{ block.settings.logo | img_url: '300x' }}" 
+                  alt="{{ block.settings.alt_text | default: 'Logo' }}"
+                  class="logo-carousel__logo"
+                  loading="lazy"
+                >
+              {% endif %}
+            {% else %}
+              <div class="logo-carousel__logo" style="width: 150px; height: 80px; background: #e5e5e5; border-radius: 0.5rem;"></div>
+            {% endif %}
+          </div>
+        {% endfor %}
+
+        {%- comment -%} Duplicate for seamless loop {%- endcomment -%}
+        {% for block in section.blocks %}
+          <div class="logo-carousel__item">
+            {% if block.settings.logo %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" target="_blank" rel="noopener">
+                  <img 
+                    src="{{ block.settings.logo | img_url: '300x' }}" 
+                    alt="{{ block.settings.alt_text | default: 'Logo' }}"
+                    class="logo-carousel__logo"
+                    loading="lazy"
+                  >
+                </a>
+              {% else %}
+                <img 
+                  src="{{ block.settings.logo | img_url: '300x' }}" 
+                  alt="{{ block.settings.alt_text | default: 'Logo' }}"
+                  class="logo-carousel__logo"
+                  loading="lazy"
+                >
+              {% endif %}
+            {% else %}
+              <div class="logo-carousel__logo" style="width: 150px; height: 80px; background: #e5e5e5; border-radius: 0.5rem;"></div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP Animations
+  if (typeof gsap !== 'undefined') {
+    const header = document.querySelector('[data-fade-in]');
+    
+    if (header) {
+      gsap.from(header, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    }
+
+    // Logo carousel animation (right to left)
+    const track = document.querySelector('[data-logo-track]');
+    if (track) {
+      const items = track.children;
+      const itemsArray = Array.from(items);
+      const halfLength = itemsArray.length / 2;
+      const speed = {{ section.settings.speed | default: 50 }};
+      
+      // Calculate total width of one set of items
+      let totalWidth = 0;
+      for (let i = 0; i < halfLength; i++) {
+        totalWidth += itemsArray[i].offsetWidth + 64; // 64px = 4rem gap
+      }
+      
+      // Create seamless loop animation (right to left = positive x movement)
+      gsap.to(track, {
+        x: totalWidth,
+        duration: totalWidth / speed,
+        ease: 'none',
+        repeat: -1
+      });
+    }
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Carrusel de Logos",
+  "class": "logo-carousel-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título",
+      "default": "Nuestros Colaboradores"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Marcas que confían en nosotros"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px/s",
+      "label": "Velocidad de Animación",
+      "default": 50
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Texto Alternativo",
+          "default": "Logo"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace",
+          "info": "Opcional - Enlace al hacer clic en el logo"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carrusel de Logos",
+      "settings": {
+        "title": "Nuestros Colaboradores"
+      },
+      "blocks": [
+        {"type": "logo"},
+        {"type": "logo"},
+        {"type": "logo"},
+        {"type": "logo"},
+        {"type": "logo"},
+        {"type": "logo"}
+      ]
+    }
+  ]
+}
+{% endschema %}

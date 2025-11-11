@@ -1,0 +1,269 @@
+{% comment %}
+  ÉLÉGANCE - Rich Text Section
+  Sección de texto enriquecido con formato
+{% endcomment %}
+
+<style>
+  .rich-text {
+    padding: 8rem 2rem;
+  }
+
+  .rich-text__container {
+    max-width: {{ section.settings.max_width }};
+    margin: 0 auto;
+    opacity: 0;
+  }
+
+  .rich-text--narrow .rich-text__container {
+    max-width: 700px;
+  }
+
+  .rich-text--medium .rich-text__container {
+    max-width: 900px;
+  }
+
+  .rich-text--wide .rich-text__container {
+    max-width: 1200px;
+  }
+
+  .rich-text__title {
+    font-size: 3.5rem;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+    text-align: {{ section.settings.text_alignment }};
+  }
+
+  .rich-text__content {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    text-align: {{ section.settings.text_alignment }};
+  }
+
+  .rich-text__content h2 {
+    font-size: 2.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+  }
+
+  .rich-text__content h3 {
+    font-size: 2rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+  }
+
+  .rich-text__content h4 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
+  }
+
+  .rich-text__content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .rich-text__content a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    transition: opacity 0.3s ease;
+  }
+
+  .rich-text__content a:hover {
+    opacity: 0.8;
+  }
+
+  .rich-text__content ul,
+  .rich-text__content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+
+  .rich-text__content li {
+    margin-bottom: 0.75rem;
+  }
+
+  .rich-text__content blockquote {
+    border-left: 4px solid var(--color-accent);
+    padding-left: 2rem;
+    margin: 2rem 0;
+    font-style: italic;
+    font-size: 1.25rem;
+  }
+
+  .rich-text__content img {
+    width: 100%;
+    border-radius: 1rem;
+    margin: 2rem 0;
+  }
+
+  .rich-text__button {
+    display: inline-flex;
+    padding: 1.25rem 2.5rem;
+    background: var(--color-accent);
+    color: var(--color-background);
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    margin-top: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .rich-text__button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .rich-text--centered .rich-text__button {
+    display: inline-flex;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 768px) {
+    .rich-text {
+      padding: 4rem 1.5rem;
+    }
+
+    .rich-text__title {
+      font-size: 2.5rem;
+    }
+
+    .rich-text__content {
+      font-size: 1rem;
+    }
+
+    .rich-text__content h2 {
+      font-size: 2rem;
+    }
+
+    .rich-text__content h3 {
+      font-size: 1.5rem;
+    }
+  }
+</style>
+
+<section class="rich-text rich-text--{{ section.settings.max_width }} rich-text--{{ section.settings.text_alignment }}">
+  <div class="rich-text__container" data-fade-in>
+    {% if section.settings.title != blank %}
+      <h2 class="rich-text__title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% if section.settings.content != blank %}
+      <div class="rich-text__content">
+        {{ section.settings.content }}
+      </div>
+    {% endif %}
+
+    {% if page.content != blank and section.settings.show_page_content %}
+      <div class="rich-text__content">
+        {{ page.content }}
+      </div>
+    {% endif %}
+
+    {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+      <div style="text-align: {{ section.settings.text_alignment }};">
+        <a href="{{ section.settings.button_link }}" class="rich-text__button">
+          {{ section.settings.button_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof gsap === 'undefined') return;
+
+  const container = document.querySelector('[data-fade-in]');
+
+  if (container) {
+    {% if section.settings.enable_animations %}
+      gsap.from(container, {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: 'power3.out'
+      });
+    {% else %}
+      gsap.set(container, { opacity: 1 });
+    {% endif %}
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Texto Enriquecido",
+  "class": "rich-text-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Título"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Contenido",
+      "default": "<p>Escribe tu contenido aquí. Puedes usar formato enriquecido, enlaces y listas.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_page_content",
+      "label": "Mostrar Contenido de la Página",
+      "info": "Muestra el contenido de la página actual (útil para templates de página)",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Ancho Máximo",
+      "options": [
+        {"value": "narrow", "label": "Estrecho (700px)"},
+        {"value": "medium", "label": "Medio (900px)"},
+        {"value": "wide", "label": "Ancho (1200px)"}
+      ],
+      "default": "medium"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alineación del Texto",
+      "options": [
+        {"value": "left", "label": "Izquierda"},
+        {"value": "center", "label": "Centro"},
+        {"value": "right", "label": "Derecha"}
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_animations",
+      "label": "Habilitar Animaciones",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texto del Botón"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del Botón"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Texto Enriquecido",
+      "settings": {
+        "title": "Nuestra Historia",
+        "content": "<p>Escribe tu contenido aquí.</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

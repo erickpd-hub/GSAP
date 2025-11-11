@@ -1,0 +1,26 @@
+{
+  "sections": {
+    "promo_ticker": {
+      "type": "promo-ticker"
+    },
+    "header": {
+      "type": "header"
+    },
+    "main": {
+      "type": "rich-text",
+      "settings": {
+        "enable_animations": false,
+        "max_width": "narrow"
+      }
+    },
+    "footer": {
+      "type": "footer"
+    }
+  },
+  "order": [
+    "promo_ticker",
+    "header",
+    "main",
+    "footer"
+  ]
+}
